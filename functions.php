@@ -4,6 +4,8 @@ function enqueue_parent_styles() {
 wp_enqueue_style( 'parent-style', get_template_directory_uri().'/style.css' );
 }
 
+
+
 /**
  * Hide email and phone form wcMP shop
  */
@@ -68,3 +70,21 @@ function new_loop_shop_per_page( $cols ) {
   $cols = 100;
   return $cols;
 }
+
+/**
+ * hide fields in checkout woocomerce
+ */
+add_filter( 'woocommerce_default_address_fields' , 'custom_override_default_address_fields' );
+ 
+function custom_override_default_address_fields( $address_fields ) {
+    unset( $address_fields['postcode'] );
+    unset( $address_fields['company'] );
+    unset( $address_fields['address_1'] );
+    unset( $address_fields['address_2'] );
+    unset( $address_fields['city'] );
+    unset( $address_fields['country'] );
+    unset( $address_fields['state'] );
+ 
+    return $address_fields;
+}
+
