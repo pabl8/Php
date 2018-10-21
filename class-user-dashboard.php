@@ -1005,7 +1005,7 @@ class WyzUserDashboard{
 		$links = array();
 		if ( $this->can_add_business )
 			$links[ WyzQueryVars::AddNewBusiness ] = array(
-				'title' => 'Business',
+		                'title' => 'Perfil Profesional',
 				'link' => $this->get_link( array( 'page' => 'add-edit-business', WyzQueryVars::AddNewBusiness => 1 ) ),
 				'icon' => $this->page_titles[ WyzQueryVars::Businesses ][1]
 			);
