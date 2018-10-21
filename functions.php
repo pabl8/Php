@@ -13,8 +13,8 @@ add_filter('wcmp_vendor_store_header_hide_store_phone', '__return_true');
 add_filter('wcmp_vendor_store_header_hide_store_email', '__return_true');
 
 /**
- * show sell by
- */
+ * show sell by   --- comentada el 21/10 porque se agrego esta linea en la actualizacion del template de wyzi y ya no es necesario agregarlo por codigo
+ 
 
 add_filter( 'wcmp_sold_by_text_after_products_shop_page', 'filter_wcmp_sold_by_text' );
 function filter_wcmp_sold_by_text() 
