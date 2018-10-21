@@ -2,7 +2,6 @@
 Se encuentra en: public_html/wp-content/plugins/wyz-toolkit/classes/user-dashboard*/
 
 
-application/x-httpd-php class-user-dashboard.php ( C++ source, ASCII text, with very long lines, with CRLF line terminators )
 <?php
 
 class WyzUserDashboard{
@@ -646,23 +645,23 @@ class WyzUserDashboard{
 			);
 
 			$links['businesses'] = array(
-				'title' => 'Businesses',
-				'link' => '#',
+				'title' => 'Mi Tienda',
+				'link' => '',
 				'class' => '',
 				'icon' => 'institution',
 				'order' => 2
 			);
 
 			$links['businesses_all'] = array(
-				'title' => __('All','wyzi-business-finder'),
+				'title' => __('Mi tienda Online','wyzi-business-finder'),
 				'link' => $this->get_link( WyzQueryVars::Businesses ),
 				'class' => '',
 				'icon' => '',
 				'parent' => 'businesses',
 				'order' => 1
-			);
+			); 
 
-			$links['businesses_published'] = array(
+		/*	$links['businesses_published'] = array(
 				'title' => __('Published','wyzi-business-finder'),
 				'link' => $this->get_link( array( 'page' => WyzQueryVars::Businesses, 'status' => 'published' ) ),
 				'class' => '',
@@ -678,10 +677,10 @@ class WyzUserDashboard{
 				'icon' => '',
 				'parent' => 'businesses',
 				'order' => 3
-			);
+			);*/
 			if ( $this->can_add_business )
 				$links['businesses_add'] = array(
-					'title' => __('Add New','wyzi-business-finder'),
+					'title' => __('Crear mi perfil Profesional','wyzi-business-finder'),
 					'link' => $this->get_link( array( 'page' => 'add-edit-business', WyzQueryVars::AddNewBusiness => 1 ) ),
 					'class' => '',
 					'icon' => '',
@@ -806,7 +805,7 @@ class WyzUserDashboard{
 		}
 
 
-		if ( $this->can_shop )
+	/*	if ( $this->can_shop )
 			$links['shop'] = array(
 				'title' => esc_html__( 'Shop', 'wyzi-business-finder' ),
 				'link' => $this->get_link( 'shop' ),
@@ -835,8 +834,8 @@ class WyzUserDashboard{
 				'icon' => 'money',
 				'order' => 8
 			);
-		}
-
+		}  
+/*
 		/*$links['bookings'] = array(
 				'title' => esc_html__( 'Bookings', 'wyzi-business-finder' ),
 				'link' => '#',
