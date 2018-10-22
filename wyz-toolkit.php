@@ -1,4 +1,4 @@
-
+/* Archivo:  public_html/wp-content/plugins/wyz-toolkit/wyz-toolkit.php  */
 application/x-httpd-php wyz-toolkit.php ( PHP script, ASCII text, with very long lines )
 <?php
 /**
