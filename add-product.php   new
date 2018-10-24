@@ -4,7 +4,6 @@ Template del dashboard nuevo de ventas de wcmp
 
 
 
-
 <?php
 /*
  * The template for displaying vendor add product
@@ -433,7 +432,7 @@ $attribute_taxonomies = wc_get_attribute_taxonomies();
             }
             ?>
         </div>
-        <?php if($disable_other_product_type) : ?>
+        <?php /* if($disable_other_product_type) : ?>
             <div class="add-product-backend">
                 <p><?php _e('For other product types go to ', 'dc-woocommerce-multi-vendor'); ?><a href="<?php echo admin_url('post-new.php?post_type=product'); ?>"><?php _e('WP backend', 'dc-woocommerce-multi-vendor'); ?> <i class="wcmp-font ico-wp-backend-icon"></i></a></p>
             </div>
@@ -443,7 +442,7 @@ $attribute_taxonomies = wc_get_attribute_taxonomies();
             <?php do_action('before_wcmp_fpm_template'); ?>
             <h3 class="pro_ele_head simple variable external grouped"><?php _e('General', 'dc-woocommerce-multi-vendor'); ?></h3>
             <div class="pro_ele_block simple variable external grouped">
-                <?php
+                <?php */
                 $_wp_editor_settings = array('tinymce' => true);
                 if (!$WCMp->vendor_caps->vendor_can('is_upload_files')) {
                     $_wp_editor_settings['media_buttons'] = false;
@@ -553,10 +552,10 @@ $attribute_taxonomies = wc_get_attribute_taxonomies();
                 ?> 
                 
                 <div class="form-group tagsdiv">
-                    <label class="control-label form-label col-sm-3"><?php _e('Tags', 'dc-woocommerce-multi-vendor'); ?></label>
+                    <label class="control-label form-label col-sm-3"><?php  _e('Tags', 'dc-woocommerce-multi-vendor'); ?></label>
                     <div class="col-md-6 col-sm-9">
                         <select id="wcmp-product-tags" name="product_tags[]" multiple="multiple" style="width: 100%;">
-                            <?php  /*
+                            <?php  
                             $tags = get_terms( 'product_tag', apply_filters('wcmp_add_product_tag_query_args', array( 'number' => 45, 'hide_empty' => false, 'orderby' => 'count', 'order' => 'DESC' )));
                             if($tags) :
                                 foreach ($tags as $tag) {
@@ -570,7 +569,7 @@ $attribute_taxonomies = wc_get_attribute_taxonomies();
 
                 
            </div>
-            <h3 class="pro_ele_head simple variable grouped non-external non-redq_rental non-accommodation-booking non-booking <?php if (apply_filters("vendor_product_inventory_hide",false)) echo ' vendor_hidden'; ?>"><?php _e('Inventory', 'dc-woocommerce-multi-vendor'); ?></h3>
+            <h3 class="pro_ele_head simple variable grouped non-external non-redq_rental non-accommodation-booking non-booking <?php if (apply_filters("vendor_product_inventory_hide",false)) echo ' vendor_hidden'; ?>"><?php /* _e('Inventory', 'dc-woocommerce-multi-vendor'); ?></h3>
             <div class="pro_ele_block simple variable grouped non-external non-redq_rental non-accommodation-booking non-booking <?php if (apply_filters("vendor_product_inventory_hide",false)) echo ' vendor_hidden'; ?>">
 
                 <?php
@@ -722,9 +721,9 @@ $attribute_taxonomies = wc_get_attribute_taxonomies();
                 ?>
 
             </div>
-        <?php } ?> 
+        <?php  } ?> 
 
-        <?php */ if (WC_Dependencies_Product_Vendor::fpm_wc_tabs_lite_plugin_active_check()) { ?>
+        <?php */  if (WC_Dependencies_Product_Vendor::fpm_wc_tabs_lite_plugin_active_check()) { ?>
             <h3 class="pro_ele_head simple variable external grouped booking"><?php _e('Custom Tabs', 'dc-woocommerce-multi-vendor'); ?></h3>
             <div class="pro_ele_block simple variable external grouped booking">
 
