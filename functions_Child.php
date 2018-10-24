@@ -88,3 +88,11 @@ function custom_override_default_address_fields( $address_fields ) {
     return $address_fields;
 }
 
+/**
+ * hide my shop
+ */
+add_filter( 'wcmp_vendor_dashboard_header_nav', 'filter_wcmp_vendor_dashboard_header_nav', 10, 1 );
+function filter_wcmp_vendor_dashboard_header_nav( $header_nav ) {
+	unset($header_nav['shop-link']); //remove Vendor Shop Link
+	return $header_nav;
+}
