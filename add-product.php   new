@@ -439,10 +439,10 @@ $attribute_taxonomies = wc_get_attribute_taxonomies();
         <?php endif; ?>
 
         <div id="frontend_product_manager_accordion">
-            <?php do_action('before_wcmp_fpm_template'); ?>
+            <?php */ do_action('before_wcmp_fpm_template'); ?>
             <h3 class="pro_ele_head simple variable external grouped"><?php _e('General', 'dc-woocommerce-multi-vendor'); ?></h3>
             <div class="pro_ele_block simple variable external grouped">
-                <?php */
+                <?php 
                 $_wp_editor_settings = array('tinymce' => true);
                 if (!$WCMp->vendor_caps->vendor_can('is_upload_files')) {
                     $_wp_editor_settings['media_buttons'] = false;
