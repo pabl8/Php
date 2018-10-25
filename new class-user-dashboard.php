@@ -850,7 +850,16 @@ $links['sesiones4'] = array(
 				'icon' => 'institution',
 				'order' => 98
 			);	
-			
+		
+			$links['recursos3'] = array(
+				'title' => 'Biblioteca',
+				'link' => 'https://sesionesonline.com/sesiones/libros',
+				'class' => '',
+				'icon' => '',
+				'order' => 101,
+				'parent' => 'recursos'
+			);
+		/*
 			$links['recursos2'] = array(
 				'title' => 'Recursos de uso libre',
 				'link' => 'https://sesionesonline.com/category/recursos',
@@ -860,14 +869,7 @@ $links['sesiones4'] = array(
 				'parent' => 'recursos'
 			);
 			
-			$links['recursos3'] = array(
-				'title' => 'Biblioteca',
-				'link' => 'https://sesionesonline.com/tienda',
-				'class' => '',
-				'icon' => '',
-				'order' => 101,
-				'parent' => 'recursos'
-			);
+			
 			
 				$links['recursos4'] = array(
 				'title' => 'Videos',
@@ -877,7 +879,7 @@ $links['sesiones4'] = array(
 				'order' => 101,
 				'parent' => 'recursos'
 			);
-					  
+				*/	  
 	
 					}
 					
