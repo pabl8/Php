@@ -1,7 +1,6 @@
 /* Template del dashboard  
 Se encuentra en: public_html/wp-content/plugins/wyz-toolkit/classes/user-dashboard*/
 
-
 <?php
 
 class WyzUserDashboard{
@@ -495,8 +494,8 @@ class WyzUserDashboard{
 		?>
 		<!DOCTYPE html>
 		<html style="margin-top: 0!important;" <?php echo ( is_rtl() ? 'dir="rtl"' : '' );?> <?php language_attributes();?>>
-		<head>
-			<meta charset="utf-8">
+		<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+			
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 
 			<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -777,9 +776,9 @@ if ( $this->can_shop ) {
 			);
 		} */
 
-		if ( $this->can_products ) {
+	if ( !$this->can_add_business) {
 			$links['products'] = array(
-				'title' => esc_html( get_option( 'products_tab_label', __( 'Products', 'wyzi-business-finder' ) ) ),
+				'title' => esc_html( get_option( 'products_tab_label', __( 'Productos', 'wyzi-business-finder' ) ) ),
 				'link' => $this->get_link( WyzQueryVars::Products ),
 				'class' => '',
 				'icon' => 'shopping-bag',
@@ -881,7 +880,7 @@ $links['sesiones4'] = array(
 					
 		if ( $this->is_business_owner ) {
 			$links['descuentos'] = array(
-				'title' => '30% DE DESCUENTO',
+				'title' => '30% DE DESCUENTO EN SEO Y SEM',
 				'link' => 'https://sesionesonline.com/category/recursos',
 				'class' => '',
 				'icon' => 'free-code-camp',
@@ -901,8 +900,8 @@ $links['sesiones4'] = array(
 				'order' => 7
 			); */
 
-	/* pepe - dashboard (que da paso al otro panel)*/
-	if ( WyzHelpers::is_user_vendor( $this->user_id ) ) {
+	/*  dashboard (que da paso al otro panel)*/
+	if ( !$this->can_add_business ) {
 			$shop_settings_link = get_home_url( null,'/wcmp/' );
 			if ( function_exists('wcmp_vendor_dashboard_page_id') )
 				$shop_settings_link = get_page_link( wcmp_vendor_dashboard_page_id() );
@@ -1337,4 +1336,5 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 }
 add_filter('show_admin_bar', '__return_false');
 new WyzUserDashboard();
+
 
