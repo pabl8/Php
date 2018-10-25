@@ -883,7 +883,7 @@ $links['sesiones4'] = array(
 	
 					}
 					
-		if ( $this->is_business_owner ) {
+	/*	if ( $this->is_business_owner ) {
 			$links['descuentos'] = array(
 				'title' => '30% DE DESCUENTO EN SEO Y SEM',
 				'link' => 'https://sesionesonline.com/category/recursos',
@@ -894,7 +894,7 @@ $links['sesiones4'] = array(
 					    
 					}				
 
-		 /*
+		 
 		 Shop - lo saco porque no da info para los users
 		 if ( $this->can_shop )
 			$links['shop'] = array(
