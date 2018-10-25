@@ -571,9 +571,12 @@ class WyzUserDashboard{
 
 	}
 
-
+/* El boton añadir cambia si tienes publicada una tienda o no */
 	private function add_new_links() {
-		foreach ($this->top_add_items as $key => $item) {
+	    if ( $this->can_add_business) 
+	     echo    '<a   href="https://sesionesonline.com/user-account?page=add-edit-business&add-new-business=1" <i class="fa fa-address-card fa-1x" <p>Clic aquí para crear tu perfil profesional y comenzar a publicar avisos </p></i></a>'; 
+	     	      else
+	foreach ($this->top_add_items as $key => $item) {
 			echo '<li><a href="'.$item['link'].'">'.(isset($item['icon'])&&!empty($item['icon'])?('<i class="fa fa-'.$item['icon'].'"></i>'):'').$item['title'].'</a></li>';
 		}
 	}
