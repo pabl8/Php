@@ -1337,4 +1337,3 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 add_filter('show_admin_bar', '__return_false');
 new WyzUserDashboard();
 
-
