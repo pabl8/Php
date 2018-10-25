@@ -853,7 +853,7 @@ $links['sesiones4'] = array(
 		
 			$links['recursos3'] = array(
 				'title' => 'Biblioteca',
-				'link' => 'https://sesionesonline.com/sesiones/libros',
+				'link' => 'https://sesionesonline.com/?s=Libros_gratis',
 				'class' => '',
 				'icon' => '',
 				'order' => 101,
