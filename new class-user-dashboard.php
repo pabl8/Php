@@ -169,7 +169,7 @@ class WyzUserDashboard{
 					break;
 				default:
 					$this->current_page_condition = true;
-					$this->current_page = $this->is_business_owner ? 'landing' : 'profile';
+					$this->current_page = $this->is_business_owner ? 'landing' : 'favorite';
 					break;
 			} elseif( isset( $_GET['action'] ) && ( 'sent_items' == $_GET['action'] || 'trash' == $_GET['action'] || 'read' == $_GET['action'] ) ) {
 				$this->current_page_condition = $this->can_inbox;
@@ -179,7 +179,7 @@ class WyzUserDashboard{
 				$this->current_page = 'shop';
 			} else {
 				$this->current_page_condition = true;
-				$this->current_page = $this->is_business_owner ? 'landing' : 'profile';;
+				$this->current_page = $this->is_business_owner ? 'landing' : 'favorite';;
 			}
 	}
 
