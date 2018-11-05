@@ -1,4 +1,6 @@
-/* Archivo:  public_html/wp-content/plugins/wyz-toolkit/wyz-toolkit.php  */
+/* Archivo:  public_html/wp-content/plugins/wyz-toolkit/wyz-toolkit.php 
+	wyz_pass_strength_js comentada
+*/
 application/x-httpd-php wyz-toolkit.php ( PHP script, ASCII text, with very long lines )
 <?php
 /**
