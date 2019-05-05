@@ -246,7 +246,7 @@ function wyz_scripts() {
 
 	wp_register_script( 'wyz_forms_validation_js', plugin_dir_url( __FILE__ ) . 'businesses-and-offers/businesses/js/forms-validation.js', array( 'jquery' ), false, true );
 
-	/* Linea comentada para sacar la barra de pasword seguro que confunde mucho wp_register_script( 'wyz_pass_strength_js', plugin_dir_url( __FILE__ ) . 'businesses-and-offers/businesses/js/pass-strength.js', array( 'jquery', 'password-strength-meter' ), false, true ); */ 
+	/* Pepe (correccion- cambio) Linea comentada para sacar la barra de pasword seguro que confunde mucho wp_register_script( 'wyz_pass_strength_js', plugin_dir_url( __FILE__ ) . 'businesses-and-offers/businesses/js/pass-strength.js', array( 'jquery', 'password-strength-meter' ), false, true ); */ 
 	wp_register_script( 'wyz_marker_cluster', plugin_dir_url( __FILE__ ) . 'templates-and-shortcodes/js/marker-cluster.js', array( 'jquery' ), false, true );
 	wp_register_script( 'wyz_spiderfy', plugin_dir_url( __FILE__ ) . 'templates-and-shortcodes/js/spiderfy.js', array( 'wyz_marker_cluster' ), false, true );
 	wp_register_script( 'wyz_range_slider', plugin_dir_url( __FILE__ ) . 'templates-and-shortcodes/js/range-slider.js', array( 'jquery' ), false, true );
