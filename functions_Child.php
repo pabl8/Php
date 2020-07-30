@@ -136,6 +136,15 @@ function woocommerce_custom_single_add_to_cart_text() {
 add_filter( 'woocommerce_product_add_to_cart_text', 'woocommerce_custom_product_add_to_cart_text' );  
 function woocommerce_custom_product_add_to_cart_text() {
     return __( 'Lo quiero', 'woocommerce' );
+    
+}
+
+
+// Cambia boton al final en lugar de realizar compra
+add_filter( 'woocommerce_order_button_text', 'misha_custom_button_text' );
+ 
+function misha_custom_button_text( $button_text ) {
+   return 'Finalizar'; // new text is here 
 }
 
 /**
