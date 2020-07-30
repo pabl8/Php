@@ -8,23 +8,82 @@ if ( ! defined( 'ABSPATH' ) ) {
 	wp_die('No cheating');
 }
 
-require_once( plugin_dir_path( __FILE__ ) . '/header.php' );
+require_once(WYZ_TEMPLATES_DIR . '/headers/header.php' );
 
 if ( ! class_exists( 'WYZIHeader' ) ) { 
 
 	class WYZIHeader extends WYZIHeaderParent {
 
-		private $header_template = '';
-		private $logo =  '';
-
 		public function __construct( $WUA ) {
 			parent::__construct( $WUA );
-			$this->header_template = wyz_get_option( 'header-layout' );
-			$this->logo = wyz_get_option( 'header-logo-upload' );
+			if ( $this->is_seethrough ) {
+				$this->header_template = 'header1';
+			} else {
+				$this->header_template = wyz_get_option( 'header-layout' );
+				if ( '' == $this->header_template )
+					$this->header_template = 'header1';
+			}
+			
 		}
 
 		public function start() {
-			echo '<header class="header static">';
+			if ( $this->is_seethrough ) {
+				$has_mobile_style = '' != $this->mobile_bg_color || '' != $this->mobile_font_color || '' != $this->mobile_font_active_color;
+
+				wp_register_style( 'header1-see-through-menu-css', false );
+				wp_enqueue_style( 'header1-see-through-menu-css' );
+
+				if ( '' != $this->bg_color )
+					 wp_add_inline_style( 'header1-see-through-menu-css', '.header-bottom, .main-menu ul.sub-menu { background-color: ' . $this->bg_color . ';}' );
+
+				if ( '' != $this->submenu_bg_color )  
+					wp_add_inline_style( 'header1-see-through-menu-css', '.main-menu ul.sub-menu { background-color: ' . $this->submenu_bg_color . ';}' );
+
+				if ( 'on' != $this->shadow )
+					wp_add_inline_style( 'header1-see-through-menu-css', '.header-bottom, .main-menu li:hover > ul.sub-menu { box-shadow: none;}' );
+
+				if ( $this->font_color != '' )
+					wp_add_inline_style( 'header1-see-through-menu-css', '.main-menu nav > ul > li:hover > a, .main-menu ul > li > a, #main-menu > li.menu-item-has-children .fa,
+				 	 .main-menu > ul > li .fa, .header-links a,.mean-nav > ul > li ul li a,.mean-nav > ul > li ul li a, .mean-nav > ul > li > a, .mean-nav ul li li a, .mean-nav ul li li li a, .meanmenu-reveal .fa,.main-menu nav > ul > li > a, .login-menu > ul > li > a { color: ' . $this->font_color . ';}' );
+
+				if ( $this->submenu_font_color != '' )
+					wp_add_inline_style( 'header1-see-through-menu-css', '.sub-menu li a, .sub-menu li i{ color: ' . $this->submenu_font_color . ';}' );
+
+				if ( $this->font_hover_color != '' )
+					wp_add_inline_style( 'header1-see-through-menu-css', '.main-menu nav > ul > li.current-menu-item > a, .main-menu nav > ul > li:hover > a,.main-menu nav > ul > li:hover> .fa, .login-menu nav > ul > li.current-menu-item > a, .login-menu nav > ul > li:hover > a, .sub-menu li:hover > a, .sub-menu li:hover>a i { color: ' . $this->font_hover_color . ';}' );
+
+				if ( $this->font_active_color != '' )
+					wp_add_inline_style( 'header1-see-through-menu-css', '.main-menu nav ul li.current-menu-item > a, .main-menu nav ul li.current-menu-item:hover > a,
+					.main-menu nav ul li.current-menu-parent > a, .main-menu nav ul li.current-menu-parent:hover > a,
+					.mean-nav ul li.current-menu-item > a, .mean-nav ul li.current-menu-item:hover > a,
+					.mean-nav ul li.current-menu-parent > a, .mean-nav ul li.current-menu-parent:hover > a,
+					 .login-menu nav > ul > li.current-menu-item > a, .login-menu nav > ul > li.current-menu-item:hover > a { color: ' . $this->font_active_color . ';}' );
+
+				if ( $has_mobile_style ) {
+					$has_mobile_style_css = '@media only screen and (max-width: 767px){';
+					
+					if ( '' != $this->mobile_font_color ) 
+						$has_mobile_style_css .= '.mean-nav > ul > li > a,.mean-nav > ul > li ul li a,.sub-menu li i, .mean-nav ul li li a, .mean-nav ul li li li a, .meanmenu-reveal .fa { color: ' . $this->mobile_font_color . ';}';
+					
+					if ( '' != $this->mobile_font_active_color ) 
+						$has_mobile_style_css .= '.mean-nav ul li.current-menu-item > a, .mean-nav ul li.current-menu-item:hover > a,
+					.mean-nav ul li.current-menu-parent > a, .mean-nav ul li.current-menu-parent:hover > a{ color: ' . $this->mobile_font_active_color . ';}';
+					
+					if ( '' != $this->mobile_bg_color ) 
+						$has_mobile_style_css .= '.mean-nav,.header-bottom,.mean-nav > ul > li > a, .sub-menu { background-color: ' . $this->mobile_bg_color . ';}';
+
+					$has_mobile_style_css .= '}';
+
+					wp_add_inline_style( 'header1-see-through-menu-css', $has_mobile_style_css );
+				}
+			}
+			echo '<header class="header static';
+			if ( $this->is_seethrough ) {
+				echo ' header-seethrough';
+				if ( is_admin_bar_showing() )
+					echo ' header-admin-bar';
+			}
+			echo '">';
 		}
 
 		public function close() {
@@ -41,11 +100,14 @@ if ( ! class_exists( 'WYZIHeader' ) ) {
 					<div class="container">
 						<div class="row">
 							<div class="col-xs-12">
+								<?php if ( 'on' != get_post_meta( get_the_ID(), 'wyz_page_title', true ) ) {?>
 								<div class="page-title float-left">
-									<h2><?php $this->the_page_title();?></h2>
+							<!--PM: comento aqui para que no aparezcan los titulos en las paginas
+							<h2><?php $this->the_page_title();?></h2>-->
 								</div>
+								<?php }
 
-								<?php if ( ! is_search() ) {
+								if ( ! is_search() ) {
 									echo wyz_breadcrumbs();
 								}
 								if ( class_exists( 'WyzUserAccount' ) ) {
@@ -159,8 +221,7 @@ if ( ! class_exists( 'WYZIHeader' ) ) {
 		protected function the_main_menu() {
 			?>
 			<!-- Main Menu -->
-			<div class="main-menu<?php echo 'header2' == $this->header_template ? ' main-menu2 float-right' : ('header3' == $this->header_template ? ' float-left' : ' float-right' ) ; ?><?php if ( 'off' != wyz_get_option( 'resp' ) ) {?> hidden-xs<?php }?>">
-				<!-- <nav id="main-navigation"> -->
+			<div class="main-menu<?php echo 'header2' == $this->header_template ? ' main-menu2 float-right' : ('header3' == $this->header_template || 'header4' == $this->header_template ? ' float-left' : ' float-right' ) ; ?><?php if ( 'off' != wyz_get_option( 'resp' ) ) {?> hidden-xs<?php }?>">
 				<?php if ( has_nav_menu( 'primary' ) ) {
 					wp_nav_menu( array(
 						'menu_id' => 'main-menu',
@@ -168,26 +229,14 @@ if ( ! class_exists( 'WYZIHeader' ) ) {
 						'theme_location' => 'primary',
 					) );
 				}?>
-				<!-- </nav> -->
 			</div>
 			<?php
 		}
 
 		private function the_mobile_menu() {
-			if ( 'off' != wyz_get_option( 'resp' ) ) {?>
-			<!-- Mobile Menu -->
-			<div class="mobile-menu hidden-lg hidden-md hidden-sm">
-				<nav id="mobile-navigation">
-					<?php if ( has_nav_menu( 'primary' ) ) {
-						wp_nav_menu( array(
-							'menu_id' => 'mobile-main-menu',
-							'container' => false,
-							'theme_location' => 'primary',
-						) );
-					}?>
-				</nav>
-			</div>
-			<?php }
+			if ( 'off' != wyz_get_option( 'resp' ) ) {
+				$this->mobile_menu_factory->the_mobile_menu();
+			}
 		}
 
 		public function the_utility_bar() {
@@ -231,10 +280,10 @@ if ( ! class_exists( 'WYZIHeader' ) ) {
 
 		private function the_logo() {?>
 			<!-- Header Logo -->
-			<?php if ( 'header3' == $this->header_template )
-				echo '<div class="text-left col-md-4 col-sm-6 col-xs-12"><div class="row">';
+			<?php if ( 'header3' == $this->header_template || 'header4' == $this->header_template )
+				echo '<div class="text-left col-md-3 col-sm-6 col-xs-12"><div class="row">';
 			?>
-			<div class="header-logo float-left<?php echo 'header2' == $this->header_template ? ' header-2-logo' : ( 'header3' == $this->header_template ? '' : '' ) ; ?>">
+			<div class="header-logo float-left<?php echo 'header2' == $this->header_template ? ' header-2-logo' : '' ; ?>">
 				<a href="<?php echo esc_url( home_url( '/' ) );?>">
 				<?php if ( '' !== $this->logo ) { ?>
 					<img src="<?php echo esc_url( $this->logo );?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"/>
@@ -245,8 +294,46 @@ if ( ! class_exists( 'WYZIHeader' ) ) {
 				<?php } ?>
 				</a>
 			</div>
-			<?php if ( 'header3' == $this->header_template )
+			<?php if ( 'header3' == $this->header_template || 'header4' == $this->header_template ) {
 				echo '</div></div>';
+				if ( 'header4' == $this->header_template ){?>
+					<div class="col-md-6 col-xs-12 text-center section">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="acgbtb">
+									<div class="acgbtb-content float-right text-right col-sm-6 col-xs-12">
+									<?php echo do_shortcode( wyz_get_option( 'acgbtb_right_content' ) );?>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				<?php
+				}
+			}
+		}
+
+		private function submit_place_btn() {
+			if ( 'header4' != $this->header_template )return;
+			$pref = is_user_logged_in() ? '' :'non-';
+			if ( 'on' !== wyz_get_option( $pref.'logged-menu-right-link'))return;
+			$link_to = wyz_get_option($pref.'logged-menu-right-link-to');
+			$link = '';
+			if ( 'page' == $link_to ){
+				$link = get_permalink( wyz_get_option($pref.'logged-menu-right-link-page'));
+				if (!$link)$link='#';
+			}elseif('link'==$link_to)
+				$link = esc_url(wyz_get_option($pref.'logged-menu-right-link-link'));
+			elseif(is_user_logged_in()&&'add-business'==$link_to && class_exists('WyzQueryVars'))
+				$link = add_query_arg( WyzQueryVars::AddNewBusiness, true, home_url( '/user-account') );
+			$link_label = wyz_get_option($pref.'logged-menu-right-link-label');?>
+			
+			<div class="text-right float-right hidden-xs">
+				<div class="header-links">
+					<a href="<?php echo esc_url($link); ?>"><i class="fa fa-paper-plane-o"></i><span><?php echo esc_html($link_label); ?></span></a>
+				</div>
+			</div>
+			<?php
 		}
 
 
@@ -263,7 +350,7 @@ if ( ! class_exists( 'WYZIHeader' ) ) {
 						<div class="row">
 							<div class="acgbtb">
 								<div class="acgbtb-content float-right text-right col-sm-6 col-xs-12">
-								<?php echo wyz_get_option( 'acgbtb_right_content' );?>
+								<?php echo do_shortcode( wyz_get_option( 'acgbtb_right_content' ) );?>
 								<div class="clear"></div>
 								</div>
 								<?php $this->the_logo();?>
@@ -272,18 +359,33 @@ if ( ! class_exists( 'WYZIHeader' ) ) {
 					</div>
 				</div>
 			</div>
-			<?php } ?>
+			<?php } elseif ( 'header4' == $this->header_template ) {?>
+				<div class="header-acgbtb text-center section">
+					<div class="container">
+						<div class="row">
+							<div class="acgbtb">
+								<div class="float-right text-right col-md-3 col-sm-6 col-xs-12">
+								<?php $this->submit_place_btn();?>
+								<div class="clear"></div>
+								</div>
+								<?php $this->the_logo();?>
+							</div>
+						</div>
+					</div>
+				</div
+			<?php }?>
 			<!-- navigation -->
-			<div class="header-bottom<?php if ( 'header3' == $this->header_template ) echo ' header-bottom-acgbtb';?>">
+			<div class="header-bottom<?php if ( 'header3' == $this->header_template || 'header4' == $this->header_template ) echo ' header-bottom-acgbtb';?>">
 				<div class="container">
 					<div class="col-xs-12">
 						<div class="row">
-							<div class="header-bottom-wrap<?php if ( 'header3' == $this->header_template ) echo ' acgbtb-m';?>">
+							<div class="header-bottom-wrap<?php if ( 'header3' == $this->header_template || 'header4' == $this->header_template ) echo ' acgbtb-m';?>">
 								<!-- Logo -->
-								<?php if ( 'header3' != $this->header_template ) {
+								<?php if ( 'header3' != $this->header_template && 'header4' != $this->header_template )
 									$this->the_logo();
+								if ( 'header3' != $this->header_template )
 									$this->the_login_menu( '' );
-								}?>
+								?>
 								<?php $this->the_main_menu();?>
 								<?php $this->the_mobile_menu();?>
 							</div>
