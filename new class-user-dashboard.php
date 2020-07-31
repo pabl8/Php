@@ -2,24 +2,18 @@
 Se encuentra en: public_html/wp-content/plugins/wyz-toolkit/classes/user-dashboard*/
 
 <?php
-
 class WyzUserDashboard{
-
 	public $title;
 	public $page_type;
 	private $permalink;
 	public $current_page;
 	private $page_titles;
-
 	private $is_mobile;
-
 	//sidebar menu items
 	private $nav_items;
 	private $top_add_items;
-
 	private $user_id;
 	private $is_business_owner;
-
 	//conditions
 	private $can_offers;
 	private $can_products;
@@ -36,17 +30,13 @@ class WyzUserDashboard{
 	private $can_add_job;
 	private $can_inbox;
 	private $current_page_condition;
-
 	//stats
 	private $vendor_stats;
 	private $products_count;
-
 	private $have_offers;
-
 	private $css_addr;
 	private $js_addr;
 	private $tmpl_addr;
-
 	
 	public function __construct() {
 		global $page_user_dashboard;
@@ -57,17 +47,14 @@ class WyzUserDashboard{
 		$this->js_addr = plugin_dir_url( __FILE__ ) . 'js/';
 		$this->tmpl_addr = plugin_dir_path( __FILE__ ) . 'templates/';
 		$this->is_mobile = function_exists('wyz_is_mobile') && wyz_is_mobile();
-
 		$this->handle_job_delete();
 		$this->hooks();
-
 		$this->init_conditions();
 		$this->get_current_page();
 		$this->init_page_titles();
 		$this->setup_nav_links();
 		$this->the_content();
 	}
-
 	private function init_conditions() {
 		$quer = new WP_Query ( array(
 			'post_status' => array( 'pending', 'publish'),
@@ -75,7 +62,6 @@ class WyzUserDashboard{
 			'posts_per_page' => 1,
 			'author' => $this->user_id
 		));
-
 		$this->have_offers = $quer->have_posts();
 		$this->is_business_owner = current_user_can( 'publish_businesses' );
 		$this->can_offers = $this->is_business_owner && ('on' != get_option( 'wyz_disable_offers' ) || $this->have_offers );
@@ -88,15 +74,12 @@ class WyzUserDashboard{
 			get_option( 'woocommerce_enable_myaccount_registration' ) === 'yes';
 		$this->can_booking = 'off' != get_option( 'wyz_users_can_booking' );
 		$this->can_calendars = $this->is_business_owner && 'off' != get_option( 'wyz_users_can_booking' ) && WyzHelpers::wyz_sub_can_bus_owner_do($this->user_id,'wyzi_sub_business_can_create_bookings') && class_exists( 'WooCommerce' );
-
-
 		$this->can_add_product = WyzHelpers::user_can_publish_products( $this->user_id );
 		$this->can_add_offer = 'on' != get_option( 'wyz_disable_offers' ) && WyzHelpers::wyz_sub_can_bus_owner_do( $this->user_id,'wyzi_sub_business_can_create_offers');
 		$this->can_add_job = WyzHelpers::user_can_create_job( $this->user_id );
 		$this->can_add_business = WyzHelpers::user_can_create_business( $this->user_id );
 		$this->can_inbox = 'on' == get_option( 'wyz_private_msg_status_on_off' ) && ( ( $this->is_business_owner && WyzHelpers::wyz_sub_can_bus_owner_do($this->user_id,'wyzi_sub_business_have_inbox') ) || current_user_can( 'manage_options' ) || ( WyzHelpers::wyz_is_current_user_client() && 'on' != get_option( 'wyz_private_msg_hide_client' ) ) );
 	}
-
 	private function get_current_page() {
 		if ( isset( $_GET['page'] ) )
 			switch ( $_GET['page'] ) {
@@ -182,7 +165,6 @@ class WyzUserDashboard{
 				$this->current_page = $this->is_business_owner ? 'landing' : 'favorite';;
 			}
 	}
-
 	private function init_page_titles() {
 		$this->page_titles = array(
 			WyzQueryVars::Offers => array(
@@ -241,7 +223,6 @@ class WyzUserDashboard{
 				'envelope'
 			),
 		);
-
 		if ( isset( $_GET['get-points'] ) ) {
 			$this->page_titles['profile'] = array(
 				__( 'Buy Points', 'wyzi-business-finder' ),
@@ -249,20 +230,15 @@ class WyzUserDashboard{
 			);
 		}
 	}
-
-
-
 	private function hooks() {
 		
 		add_action('wp_enqueue_scripts', array($this,'remove_unneeded_scripts' ), 1000 );
 		add_action('wp_enqueue_scripts', array( $this,'scripts' ),1001 );
 		//wp_enqueue_script( 'business_form_jQuery',1002);
-
 		add_filter( 'submit_job_form_wp_editor_args', array( $this, 'override_job_mce' ) );
 		add_action( 'wyz_user_dashboard_before_content', array( $this, 'handle_page_notifications' ) );
 		add_filter( 'wyz_user_dashboard_notifications', array( $this, 'check_product_publish' ), 10, 2 );
 	}
-
 	public function scripts() {
 		$req = array();
 		if ( 'vendor-form' == $this->current_page )
@@ -290,7 +266,6 @@ class WyzUserDashboard{
 				'title' => $business_week_info['title'],
 			) );
 		}
-
 		$exporters       = apply_filters( 'wp_privacy_personal_data_exporters', array() );
 		$exporters_count = count( $exporters );
 		$cur_user = wp_get_current_user();
@@ -319,18 +294,14 @@ class WyzUserDashboard{
 		wp_enqueue_script( 'wyz_my_account_js' );
 		add_filter( 'cmb2_enqueue_css', '__return_false' );
 	}
-
 	public  function remove_unneeded_scripts () {
-
 		global $wp_scripts;
 		global $wp_styles;
 		
 		//wp_register_script( 'wyz_my_account_js', plugin_dir_url( __FILE__ ) . 'templates-and-shortcodes/js/my-account.js', array( 'jquery', 'password-strength-meter' )
-
 		 if( 'business-form' == $this->current_page || 'offer-form' == $this->current_page || 'appointments' == $this->current_page || 'calendars' == $this->current_page ) {
 		 	$scripts_to_remove = array('wyz-page-loader-js','wyz_placeholder','wp-job-manager-job-submission', 'wp-job-manager-ajax-file-upload');
 		 	$styles_to_remove = array('cmb2_field_slider_css','wyz-template-style','wyz-default-style','wyz-responsive-style','wyz_booked_addon_style','wyz-page-loader-css');
-
 		 	if ( 'appointments' != $this->current_page && 'calendars' != $this->current_page ) {
 		 		$scripts_to_remove[] = 'booked-wc-fe-functions';
 		 		$scripts_to_remove[] = 'booked-wc-fe-functions';
@@ -358,8 +329,6 @@ class WyzUserDashboard{
 					wp_dequeue_script($handle);
 				}
 			}
-
-
 			foreach ($wp_styles->registered as $handle => $data)
 			{
 				if ( in_array($handle, $styles_to_remove) ) {
@@ -367,15 +336,11 @@ class WyzUserDashboard{
 					wp_dequeue_style($handle);
 				}
 			}
-
 			return;
 		}
-
 		$scripts_to_keep = array( 'user-dashboard-basics', 'wp-job-manager-job-submission', 'jquery-iframe-transport','jquery-fileupload', 'wp-job-manager-ajax-file-upload','booked-wc-fe-functions','booked-fea-js', 'media-views','utils','booked-spin-js','booked-spin-jquery','booked-chosen','booked-fitvids','booked-calendar-popup','booked-tooltipster','booked-functions'
 		);
-
 		$styles_to_keep = array('user-dashboard-style','bsf-Defaults','wp-job-manager-frontend', 'booked-icons','booked-tooltipster','booked-tooltipster-theme','booked-animations','booked-styles','booked-responsive','booked-fea-styles','booked-wc-fe-styles', 'wyz-google-font-raleway', 'wyz-google-font-varelaround', 'tp-open-sans', 'tp-raleway', 'tp-droid-serif','pmpro-advanced-levels-styles','pmprowoo');
-
 		if ( 'products' == $this->current_page || ( 'profile' == $this->current_page && isset( $_GET['get-points'] ) ) ) {
 			$styles_to_keep[] = 'wyz-woocommerce-style-overrides';
 			$styles_to_keep[] = 'woocommerce-layout';
@@ -391,20 +356,17 @@ class WyzUserDashboard{
 			$scripts_to_keep[] = 'private-message';
 			$styles_to_keep[] = 'private-message';
 		}
-
 		foreach ($wp_scripts->registered as $handle => $data)
 		{
 			if ( in_array($handle, $scripts_to_keep) )  continue;
 			wp_deregister_script($handle);
 			wp_dequeue_script($handle);
 		}
-
 		if ( isset( $wp_scripts->registered['private-message'] ) ) {
 			$pmrs = $wp_scripts->registered;
 			$pmrs['private-message']->deps = array();
 			$wp_scripts->registered = $pmrs;
 		}
-
 		foreach ($wp_styles->registered as $handle => $data)
 		{
 			if ( in_array($handle, $styles_to_keep) ) continue;
@@ -412,7 +374,6 @@ class WyzUserDashboard{
 			wp_dequeue_style($handle);
 		}
 	}
-
 	public function check_product_publish( $notifications, $current_page ) {
 		if ( 'profile' == $current_page && isset( $_GET['get-points'] ) && isset( $_GET['add-to-cart'] ) ) {
 			$pf = new WC_Product_Factory();
@@ -430,12 +391,9 @@ class WyzUserDashboard{
 		}
 		return $notifications;
 	}
-
 	public function handle_page_notifications() {
 		$notifications = array();
-
 		$notifications = apply_filters( 'wyz_user_dashboard_notifications', $notifications, $this->current_page );
-
 		foreach ( $notifications as $notif ) {
 			switch ( $notif['type'] ) {
 				case 'success':
@@ -453,14 +411,11 @@ class WyzUserDashboard{
 			}
 		}
 	}
-
-
 	public function override_job_mce( $args ) {
 		$args['tinymce']['plugins'] = 'lists,paste,tabfocus';
 		$args['tinymce']['toolbar1'] = 'bold,italic,|,bullist,numlist,|,undo,redo';
 		return $args;
 	}
-
 	
 	public function the_content() {
 		$this->header();
@@ -489,7 +444,6 @@ class WyzUserDashboard{
 		$this->footer();
 	}
 	
-
 	private function header() {
 		?>
 		<!DOCTYPE html>
@@ -514,7 +468,6 @@ class WyzUserDashboard{
 		<body>
 		<?php $this->top_nav();
 	}
-
 	private function top_nav() {
 		?>
 		<div class="navbar">
@@ -534,7 +487,6 @@ class WyzUserDashboard{
 		</div>
         <?php
 	}
-
 	private function top_nav_right() {
 		$this->setup_add_links();
 		$points_on = current_user_can( 'publish_businesses' ) && 'on' != get_option( 'wyz_hide_points' );
@@ -568,9 +520,7 @@ class WyzUserDashboard{
 		</div>
 		<!-- end: Header Menu -->
 	  <?php
-
 	}
-
 /* El boton añadir cambia si tienes publicada una tienda o no */
 	private function add_new_links() {
 	    if ( $this->can_add_business) 
@@ -580,7 +530,6 @@ class WyzUserDashboard{
 			echo '<li><a href="'.$item['link'].'">'.(isset($item['icon'])&&!empty($item['icon'])?('<i class="fa fa-'.$item['icon'].'"></i>'):'').$item['title'].'</a></li>';
 		}
 	}
-
 	private function sidebar() {
 		$page = isset( $_GET['page'] ) ? $_GET['page']: '';
 		?>
@@ -611,24 +560,18 @@ class WyzUserDashboard{
 		</div>
 		<?php
 	}
-
 	private function page_content() {
 		if ( $this->current_page_condition && file_exists( $this->tmpl_addr . $this->current_page . '.php' ) )
 			require( $this->tmpl_addr . $this->current_page . '.php'  );
 	}
-
-
 	private function get_link( $arg ) {
 		if ( ! is_array( $arg ) )
 			$arg = array( 'page' => $arg );
 		return add_query_arg( $arg, $this->permalink );
 	}
-
 	private function setup_nav_links() {
 		//Listing links
-
 		$links = array();
-
 			if ( $this->is_business_owner ) {
 		/*	$links['listings'] = array(
 				'title' => __( 'Listings', 'wyzi-business-finder' ),
@@ -637,7 +580,6 @@ class WyzUserDashboard{
 				'icon' => '',
 				'order' => 1
 			);
-
 			$links['landing'] = array(
 				'title' => __('Dashboard','wyzi-business-finder'),
 				'link' => home_url('/user-account'),
@@ -646,6 +588,14 @@ class WyzUserDashboard{
 				'order' => 0
 			);*/
 
+							$links['home'] = array(
+				'title' => 'Ir a Sesiones Online.com',
+				'link' => 'https://sesionesonline.com/sesiones',
+				'class' => '',
+				'icon' => 'home',  /* suitcase- institution*/
+				'order' => 0
+			);
+	
 			$links['businesses'] = array(
 				'title' => 'Mi Tienda',
 				'link' => '',
@@ -653,7 +603,6 @@ class WyzUserDashboard{
 				'icon' => 'address-card',  /* suitcase- institution*/
 				'order' => 2
 			);
-
 		/*	$links['businesses_all'] = array(
 				'title' => __('Mi tienda Online','wyzi-business-finder'),
 				'link' => $this->get_link( WyzQueryVars::Businesses ),
@@ -662,7 +611,6 @@ class WyzUserDashboard{
 				'parent' => 'businesses',
 				'order' => 1
 			); */
-
 		$links['businesses_published'] = array(
 				'title' => __('Mi tienda Online','wyzi-business-finder'),
 				'link' => $this->get_link( array( 'page' => WyzQueryVars::Businesses, 'status' => 'published' ) ),
@@ -671,7 +619,6 @@ class WyzUserDashboard{
 				'parent' => 'businesses',
 				'order' => 2
 			);
-
 			/*		$links['businesses_pending'] = array(
 				'title' => __('Pending','wyzi-business-finder'),
 				'link' => $this->get_link( array( 'page' => WyzQueryVars::Businesses, 'status' => 'pending' ) ),
@@ -690,8 +637,6 @@ class WyzUserDashboard{
 					'order' => 4
 				);
 		}
-
-
     	if ( $this->can_offers ) {
 			$links['offers'] = array(
 				'title' => esc_html__( 'Offers', 'wyzi-business-finder' ),
@@ -700,7 +645,6 @@ class WyzUserDashboard{
 				'icon' => 'star-o',
 				'order' => 3,
 			);
-
 			$links['offers_all'] = array(
 				'title' => __('All', 'wyzi-business-finder'),
 				'link' => $this->get_link( WyzQueryVars::Offers ),
@@ -709,7 +653,6 @@ class WyzUserDashboard{
 				'parent' => 'offers',
 				'order' => 1,
 			);
-
 			$links['offers_published'] = array(
 				'title' => __( 'Published', 'wyzi-business-finder' ),
 				'link' => $this->get_link( array( 'page' => WyzQueryVars::Offers, 'status' => 'published' ) ),
@@ -718,7 +661,6 @@ class WyzUserDashboard{
 				'parent' => 'offers',
 				'order' => 2,
 			);
-
 			$links['offers_pending'] = array(
 				'title' => __( 'Pending', 'wyzi-business-finder' ),
 				'link' => $this->get_link( array( 'page' => WyzQueryVars::Offers, 'status' => 'pending' ) ),
@@ -737,8 +679,6 @@ class WyzUserDashboard{
 					'order' => 4,
 				);
 		}
-
-
 		if ( $this->can_jobs ) {
 			$links['jobs'] = array(
 				'title' => esc_html__( 'Jobs', 'wyzi-business-finder' ),
@@ -747,7 +687,6 @@ class WyzUserDashboard{
 				'icon' => 'suitcase',
 				'order' => 4
 			);
-
 			$links['jobs_all'] = array(
 				'title' => __('All', 'wyzi-business-finder'),
 				'link' => $this->get_link( WyzQueryVars::Jobs ),
@@ -778,7 +717,6 @@ if ( $this->can_shop ) {
 				'order' => 5
 			);
 		} */
-
 	if ( !$this->can_add_business) {
 			$links['products'] = array(
 				'title' => esc_html( get_option( 'products_tab_label', __( 'Productos', 'wyzi-business-finder' ) ) ),
@@ -787,7 +725,6 @@ if ( $this->can_shop ) {
 				'icon' => 'shopping-bag',
 				'order' => 6,
 			);
-
 			$links['products_all'] = array(
 				'title' => esc_html( get_option( 'products_tab_label', __( 'Products', 'wyzi-business-finder' ) ) ),
 				'link' => esc_url( wcmp_get_vendor_dashboard_endpoint_url( get_wcmp_vendor_settings( 'wcmp_products_endpoint', 'vendor', 'general', 'products' ) ) ),
@@ -806,7 +743,6 @@ if ( $this->can_shop ) {
 					'order' => 2,
 				);
 		}
-
 /* Added by me */
 if ( !$this->is_business_owner)  { 	/* condicionaL: solo dan fav los clientes */
 $links['sesiones1'] = array(
@@ -859,6 +795,14 @@ $links['sesiones4'] = array(
 				'order' => 101,
 				'parent' => 'recursos'
 			);
+			
+						$links['sesiones_all'] = array(
+				'title' => 'Ver todas las Sesiones',
+				'link' => 'https://sesionesonline.com/sesiones',
+				'class' => '',
+				'icon' => 'list',  /* suitcase- institution*/
+				'order' => 102
+			);
 		/*
 			$links['recursos2'] = array(
 				'title' => 'Recursos de uso libre',
@@ -893,7 +837,6 @@ $links['sesiones4'] = array(
 			);	
 					    
 					}				
-
 		 
 		 Shop - lo saco porque no da info para los users
 		 if ( $this->can_shop )
@@ -904,7 +847,6 @@ $links['sesiones4'] = array(
 				'icon' => 'user',
 				'order' => 7
 			); */
-
 	/*  dashboard (que da paso al otro panel)*/
 	if ( !$this->can_add_business ) {
 			$shop_settings_link = get_home_url( null,'/wcmp/' );
@@ -927,7 +869,6 @@ $links['sesiones4'] = array(
 				'order' => 8
 			);
 		}  
-
 		/* bookings (?)
 		$links['bookings'] = array(
 				'title' => esc_html__( 'Bookings', 'wyzi-business-finder' ),
@@ -935,9 +876,8 @@ $links['sesiones4'] = array(
 				'class' => 'disabled',
 				'icon' => '',
 				'order' => 9
-			);*/
-
-		if ( $this->can_booking )
+			);
+				if ( $this->can_booking )
 			$links['appointments'] = array(
 				'title' => esc_html__( 'Appointments', 'wyzi-business-finder' ),
 				'link' => $this->get_link( 'appointments' ),
@@ -945,8 +885,7 @@ $links['sesiones4'] = array(
 				'icon' => 'calendar-o',
 				'order' => 10
 			);
-
-		if ( $this->can_calendars ) {
+	/if ( $this->can_calendars ) {
 			$links['calendars'] = array(
 				'title' => esc_html__( 'Calendars', 'wyzi-business-finder' ),
 				'link' => '#',
@@ -961,7 +900,7 @@ $links['sesiones4'] = array(
 				'icon' => '',
 				'parent' => 'calendars',
 				'order' => 1
-			);
+			);	
 		/*		$links['calendars_c_time'] = array(
 				'title' => esc_html__( 'Custom Time Slots', 'wyzi-business-finder' ),
 				'link' => $this->get_link( array('page' => 'calendars', 'wz' => 2 ) ).'#custom-timeslots',
@@ -977,9 +916,8 @@ $links['sesiones4'] = array(
 				'icon' => '',
 				'parent' => 'calendars',
 				'order' => 3
-			);*/
-		}
-
+			);
+		} /
 		if ( $this->can_inbox ) {
 			$links['inboxs'] = array(
 				'title' => esc_html__( 'Inbox', 'wyzi-business-finder' ),
@@ -1013,7 +951,6 @@ $links['sesiones4'] = array(
 				'order' => 3
 			);
 		}
-
 		/*
 		$links['account'] = array(
 			'title' => esc_html__( 'Account', 'wyzi-business-finder' ),
@@ -1022,7 +959,6 @@ $links['sesiones4'] = array(
 			'icon' => '',
 			'order' => 13,
 		);
-
 		$links['profile'] = array(
 			'title' => esc_html__( 'Editar Contrase単a', 'wyzi-business-finder' ),
 			'link' => $this->get_link( 'profile' ),
@@ -1030,8 +966,6 @@ $links['sesiones4'] = array(
 			'icon' => 'cogs',
 			'order' => 14,
 		);*/
-
-
 		if ( $this->show_subsc )
 			$links['subscription'] = array(
 				'title' => esc_html__( 'Subscription', 'wyzi-business-finder' ),
@@ -1040,7 +974,6 @@ $links['sesiones4'] = array(
 				'icon' => 'credit-card',
 				'order' => 15,
 			);
-
 if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 			$links['favorite'] = array(
 				'title' => esc_html__( 'Favorite', 'wyzi-business-finder' ),
@@ -1049,7 +982,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 				'icon' => 'heart',
 				'order' => 16
 			);
-
 	/* 
 	
 	$links['logout'] = array(
@@ -1060,11 +992,8 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 			'order' => 17,
 		);
 */
-
 		$links = apply_filters( 'wyz_additional_user_dashboard_tabs', $links );
-
 		$final_order = array();
-
 		for( $i=0;! empty( $links ); $i++ )
 			foreach ( $links as $key => $value ) {
 				if ( ! isset( $value['parent'] ) ) {
@@ -1077,16 +1006,13 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 					unset( $links[ $key ] );
 				}
 			}
-
 		usort( $final_order, array( $this, 'sort_links' ) );
-
 		/*for ($i=0; $i<count($final_order); $i++) {
 			if(('#'==$final_order[ $i ]['link']||empty($final_order[ $i ]['link']))&&(!isset($final_order[ $i ]['children'])||empty($final_order[ $i ]['children'])))
 				unset( $final_order[ $i ] );
 		}*/
 		$this->nav_items = $final_order;
 	}
-
 	private function current_page_title() {
 		echo '<h2><i class="fa fa-'.$this->page_titles[ $this->current_page ][1].'"></i>'.$this->page_titles[ $this->current_page ][0].'</h2>';
 	}
@@ -1096,7 +1022,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 		if ( $a['order'] == $b['order'] ) return 0;
 		return $a['order'] < $b['order'] ? -1 : 1;
 	}
-
 	private function setup_add_links() {
 		$links = array();
 		if ( $this->can_add_business )
@@ -1105,7 +1030,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 				'link' => $this->get_link( array( 'page' => 'add-edit-business', WyzQueryVars::AddNewBusiness => 1 ) ),
 				'icon' => $this->page_titles[ WyzQueryVars::Businesses ][1]
 			);
-
 		if ( $this->can_add_offer )
 			$links[ WyzQueryVars::AddNewOffer ] = array(
 				'title' => esc_html__( 'Offer', 'wyzi-business-finder' ),
@@ -1113,7 +1037,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 				'icon' => $this->page_titles[ WyzQueryVars::Offers ][1]
 			);
  
-
 		if ( $this->can_add_product && WyzHelpers::new_wcmp_installed() ) {
 			$links[ WyzQueryVars::AddProduct ] = array(
 				'title' => esc_html__( 'Product', 'wyzi-business-finder' ),
@@ -1121,26 +1044,21 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 				'icon' => $this->page_titles[ WyzQueryVars::Products ][1]
 			);
 		}
-
 		if ( $this->can_add_job )
 			$links[ WyzQueryVars::AddJob ] = array(
 				'title' => esc_html__( 'Job', 'wyzi-business-finder' ),
 				'link' => $this->get_link( array( 'page' => 'add-edit-job', WyzQueryVars::AddJob => 1 ) ),
 				'icon' => $this->page_titles['jobs'][1]
 			);
-
 		$links = apply_filters( 'wyz_user_dashboard_top_add_items', $links );
-
 		$this->top_add_items = $links;
 	}
-
 	private function footer() {
 		do_action( 'wp_footer' );?>	
 			</body>
 		</html>
 		<?php
 	}
-
 	private function handle_job_delete(){
 		if ( isset( $_GET['delete_job'] ) ) {
 			$red_perm = $this->get_link('jobs');
@@ -1156,7 +1074,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 			exit;
 		}
 	}
-
 	private function check_for_businesses_no_calendars() {
 		$query = new WP_Query(array(
 			'post_type' => 'wyz_business',
@@ -1165,7 +1082,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 			'fields' => 'ids',
 			'author' => $this->user_id
 		));
-
 		foreach( $query->posts as $id){
 			if ( !WyzHelpers::get_user_calendar( $this->user_id, $id ) ) {
 				$tmp_term_name = sprintf( '%s Calendar', get_the_title( $id ) );
@@ -1173,7 +1089,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 				$i = 2;
 				while( term_exists( $term_name, 'booked_custom_calendars' ) )
 					$term_name = $tmp_term_name . '_' . $i++;
-
 				$term = wp_insert_term( $term_name, 'booked_custom_calendars' );
 				WyzHelpers::set_user_calendar( $id, $term['term_id'], $this->user_id );
 				
@@ -1186,10 +1101,8 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 			}
 		}
 	}
-
 	private $stat_bus_posts;
 	/*stats*/
-
 	private function setup_stats_posts(){
 		if ( !empty( $this->stat_bus_posts ) )
 			return;
@@ -1200,7 +1113,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 			'fields' => 'ids',
 			'author' => $this->user_id
 		));
-
 		$this->stat_bus_posts = $query->posts;
 	}
 	private function get_visits_count() {
@@ -1221,7 +1133,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 	private function business_posts_data() {
 		if ( ! empty( $this->business_posts_data ) )return;
 		$this->setup_stats_posts();
-
 		$count=0;
 		$likes=0;
 		$comments=0;
@@ -1243,7 +1154,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 				}
 			}
 		}
-
 		$this->business_posts_data = array(
 			'posts_count' => $count,
 			'posts_likes' => $likes,
@@ -1274,7 +1184,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 			    // hard-coded '01' for first day     
 			    $start_date = date( 'Y-m-01' );
 			}
-
 			if ( isset( $_POST['wcmp_stat_end_dt'] ) ) {
 			    $end_date = $_POST['wcmp_stat_end_dt'];
 			} else {
@@ -1322,7 +1231,6 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 		}
 		return $this->products_count;
 	}
-
 	private function get_rates() {
 		$businesses = WyzHelpers::get_user_businesses( $this->user_id )['published'];
 		$all_sum = 0;
@@ -1341,4 +1249,3 @@ if ( !$this->is_business_owner)   	/* condicionaL: solo dan fav los clientes */
 }
 add_filter('show_admin_bar', '__return_false');
 new WyzUserDashboard();
-
