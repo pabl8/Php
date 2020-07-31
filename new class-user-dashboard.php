@@ -798,7 +798,7 @@ $links['sesiones4'] = array(
 			
 						$links['sesiones_all'] = array(
 				'title' => 'Ver todas las Sesiones',
-				'link' => 'https://sesionesonline.com/sesiones',
+				'link' => 'https://sesionesonline.com/tienda',
 				'class' => '',
 				'icon' => 'list',  /* suitcase- institution*/
 				'order' => 102
