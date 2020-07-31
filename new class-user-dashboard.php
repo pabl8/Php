@@ -590,7 +590,7 @@ class WyzUserDashboard{
 
 							$links['home'] = array(
 				'title' => 'Ir a Sesiones Online.com',
-				'link' => 'https://sesionesonline.com/sesiones',
+				'link' => 'https://sesionesonline.com/tienda',
 				'class' => '',
 				'icon' => 'home',  /* suitcase- institution*/
 				'order' => 0
