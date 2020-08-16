@@ -147,6 +147,20 @@ function misha_custom_button_text( $button_text ) {
    return 'Finalizar'; // new text is here 
 }
 
+// Esconde cosas del panel de Wcmp 
+
+add_filter('wcmp_product_data_tabs', 'callback_wcmp_product_data_tabs', 99);
+function callback_wcmp_product_data_tabs($tabs){
+    unset($tabs['inventory']);
+   unset($tabs['Shipping']);
+   unset($tabs['linked_product']); 
+   unset($tabs['attribute']);
+   unset($tabs['advanced']);
+   return $tabs;
+}
+
+
+
 /**
 --------------------- no usados ----------------------
  *diseable google maps v1 no funciono lo guardo por las dudas
