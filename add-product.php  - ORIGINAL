@@ -1,3 +1,7 @@
+/*public_html/wp-content/plugins/dc-woocommerce-multi-vendor/templates/vendor-dashboard/product-manager/add-product.php
+Template del dashboard original de ventas de wcmp
+*/
+
 <?php
 /*
  * The template for displaying vendor add product
