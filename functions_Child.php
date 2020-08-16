@@ -138,18 +138,17 @@ function woocommerce_custom_product_add_to_cart_text() {
     return __( 'Lo quiero', 'woocommerce' );
 }
 
-// Cambia boton al final en lugar de realizar compra1
-add_filter( 'woocommerce_order_button_text', 'woo_custom_order_button_text' ); 
-function woo_custom_order_button_text() {
-    return __( 'Finalizar Pedido', 'woocommerce' ); 
+
+// Traductor alive
+add_filter('gettext',  'translate_text');
+add_filter('ngettext',  'translate_text');
+function translate_text($translated) {
+     $translated = str_ireplace('Finalizar compra',  'Finalizar Pedido',  $translated);
+     return $translated;
 }
 
 
-// Cambia boton al final en lugar de realizar compra
-add_filter( 'woocommerce_order_button_text', 'misha_custom_button_text' );
- function misha_custom_button_text( $button_text ) {
-   return 'Finalizar pedido'; // new text is here 
-}
+
 
 // Esconde cosas del panel de Wcmp 
 
@@ -167,6 +166,18 @@ function callback_wcmp_product_data_tabs($tabs){
 
 /**
 --------------------- no usados ----------------------
+
+// Para traducir mas cosas
+add_filter('gettext',  'translate_text');
+add_filter('ngettext',  'translate_text');
+ 
+function translate_text($translated) {
+     $translated = str_ireplace('TEXTO QUE NO QUIERO',  'TEXTO QUE SÍ QUIERO',  $translated);
+     return $translated;
+}
+
+
+
  *diseable google maps v1 no funciono lo guardo por las dudas
 
 
